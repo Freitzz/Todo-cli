@@ -2,14 +2,14 @@ import json
 import os
 
 BASE_DIR = os.path.dirname(__file__)
-TASK_FILES = os.path.join(BASE_DIR, "tasks.json")
+TASK_FILE = os.path.join(BASE_DIR, "tasks.json")
 
 tasks = []
 try:
-    with open(TASK_FILES, "r") as file:
+    with open(TASK_FILE, "r") as file:
         tasks = json.load(file)
 except FileNotFoundError:
-    with open(TASK_FILES, "w")as file:
+    with open(TASK_FILE, "w")as file:
         json.dump([],file)
 
 
@@ -36,7 +36,7 @@ def add_task():
     task = input("Please write your task: ")
     tasks.append(task)
 
-    with open(TASK_FILES, "w") as file:
+    with open(TASK_FILE, "w") as file:
         json.dump(tasks, file)
     
     print(f"\n'{task}', added succefuly!")
@@ -66,7 +66,7 @@ def delete_task():
                         break
                     else:
                         deleted_task = tasks.pop(delete_selection - 1)
-                        with open(TASK_FILES,"w") as file:
+                        with open(TASK_FILE,"w") as file:
                             json.dump(tasks, file)
 
                         print(f"\nSuccefuly deleted = '{deleted_task}'!")
