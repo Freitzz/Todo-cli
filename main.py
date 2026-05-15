@@ -2,8 +2,13 @@ import json
 import os
 
 tasks = []
-with open(r"tasks.json", "r") as file:
-    tasks = json.load(file)
+try:
+    with open(r"tasks.json", "r") as file:
+        tasks = json.load(file)
+except FileNotFoundError:
+    with open(r"tasks.json", "w")as file:
+        json.dump([],file)
+
 
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
