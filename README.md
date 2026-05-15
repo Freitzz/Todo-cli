@@ -1,7 +1,7 @@
 # Todo CLI
 
-a simple command-line application for a todo list.
-this is my first time using git and my first steps lerning to code.
+A simple command-line application for a todo list.\
+This is my first time using git and my first steps lerning to code.
 
 ## Features
 
