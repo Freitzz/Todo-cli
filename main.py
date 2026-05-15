@@ -21,6 +21,16 @@ def add_task():
     
     input("Task added succefuly! Press enter to continue")
 
+def delete_task():
+    list_tasks(tasks)
+    delete_selection = int(input("Plese select a task: "))
+    deleted_task = tasks.pop(delete_selection - 1)
+    with open(r"tasks.json","w") as file:
+        json.dump(tasks, file)
+
+    print(f"Succefuly deleted = '{deleted_task}'!")
+    input("Press ENTER to continue")
+
 while True:
 
     print("=== Todo CLI ===\n")
@@ -35,6 +45,9 @@ while True:
 
     elif choice == "2":
         add_task()
+
+    elif choice == "3":
+        delete_task()
     
     else:
         break
