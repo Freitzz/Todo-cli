@@ -14,8 +14,12 @@ def pause():
 def list_tasks (task_list):
     clear()
     print("=== Tasks List ===\n")
-    for task in task_list:
-        print(f"{task_list.index(task) + 1} - {task}")
+
+    if len(tasks) == 0:
+        print("There are no tasks")
+    else:
+        for task in task_list:
+            print(f"{task_list.index(task) + 1} - {task}")
     
 
 def add_task():
@@ -27,17 +31,40 @@ def add_task():
     with open(r"tasks.json", "w") as file:
         json.dump(tasks, file)
     
-    print(f"'{task}', added succefuly!")
+    print(f"\n'{task}', added succefuly!")
 
 def delete_task():
-    list_tasks(tasks)
-    delete_selection = int(input("\nPlese select a task: "))
-    deleted_task = tasks.pop(delete_selection - 1)
-    with open(r"tasks.json","w") as file:
-        json.dump(tasks, file)
+    if len(tasks) == 0:
+        print("\nThere are no tasks to delete.")
+    
+    else:
+        list_tasks(tasks)
+        print("0 - Exit")
+        while True:
+            try:
+                delete_selection = int(input("\nPlese select a task: "))
+            except ValueError:
+                print("Please choose a valid task number!")
+            
+            else:
+            
+                if delete_selection < 0 or delete_selection > len(tasks):
+                    print("Please choose a valid task number!")
+                    continue
+                else:
+                    
+                    if delete_selection == 0:
+                        print("\nNo tasks deleted!")
+                        break
+                    else:
+                        deleted_task = tasks.pop(delete_selection - 1)
+                        with open(r"tasks.json","w") as file:
+                            json.dump(tasks, file)
 
-    print(f"\nSuccefuly deleted = '{deleted_task}'!")
+                        print(f"\nSuccefuly deleted = '{deleted_task}'!")
+                        break
 
+#menu 
 while True:
     
     clear()
