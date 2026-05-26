@@ -1,17 +1,12 @@
 import json
+import sqlite3
 import os
 
 BASE_DIR = os.path.dirname(__file__)
-TASK_FILE = os.path.join(BASE_DIR, "tasks.json")
+TASK_DB = os.path.join(BASE_DIR, "tasks.db")
 
-tasks = []
-try:
-    with open(TASK_FILE, "r") as file:
-        tasks = json.load(file)
-except FileNotFoundError:
-    with open(TASK_FILE, "w")as file:
-        json.dump([],file)
-
+connection = sqlite3.connect(TASK_DB)
+cursor = connection.cursor()
 
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
