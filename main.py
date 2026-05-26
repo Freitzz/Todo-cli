@@ -43,36 +43,11 @@ def add_task():
     
     print(f"\n'{task}', added succefuly with {task_priority} priority!")
 
-def delete_task():
-    if len(tasks) == 0:
-        print("\nThere are no tasks to delete.")
-    
-    else:
-        list_tasks(tasks)
-        print("0 - Exit")
-        while True:
-            try:
-                delete_selection = int(input("\nPlese select a task: "))
-            except ValueError:
-                print("Please choose a valid task number!")
-            
-            else:
-            
-                if delete_selection < 0 or delete_selection > len(tasks):
-                    print("Please choose a valid task number!")
-                    continue
-                else:
-                    
-                    if delete_selection == 0:
-                        print("\nNo tasks deleted!")
-                        break
-                    else:
-                        deleted_task = tasks.pop(delete_selection - 1)
-                        with open(TASK_FILE,"w") as file:
-                            json.dump(tasks, file)
-
-                        print(f"\nSuccefuly deleted = '{deleted_task}'!")
-                        break
+def delete_task(task_id):
+    cursor.execute("""
+    DELETE FROM tasks
+    WHERE id = (?)
+    """, (task_id,))
 
 #menu 
 while True:
@@ -83,7 +58,7 @@ while True:
     print("1 - List Tasks")
     print("2 - Add task")
     print("3 - Delete task")
-    print("0 - Exit")
+    print("0 - Save and Exit")
     choice = input("\nPlease choose an option: ")
 
     if choice == "1":
@@ -95,11 +70,18 @@ while True:
         pause()
 
     elif choice == "3":
-        delete_task()
+        list_tasks()
+        selected_task = int(input("Please select a task to delete: "))
+                
+        delete_task(selected_task)
+        print("Task delete successfully")
         pause()
+    
+    elif choice == "0":
+        connection.commit()
+        connection.close()
+        break
     
     else:
         break
 
-connection.commit()
-connection.close()
