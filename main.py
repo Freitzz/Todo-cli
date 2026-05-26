@@ -1,12 +1,20 @@
-import json
 import sqlite3
 import os
 
 BASE_DIR = os.path.dirname(__file__)
-TASK_DB = os.path.join(BASE_DIR, "tasks.db")
+TASK_DB = os.path.join(BASE_DIR, "todo.db")
 
 connection = sqlite3.connect(TASK_DB)
 cursor = connection.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS tasks (
+               id INTEGER PRIMARY KEY AUTOINCREMENT,
+               task TEXT,
+               priority INTEGER,
+               completed INTEGER
+               )
+""")
 
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
@@ -14,27 +22,26 @@ def clear():
 def pause():
     input("\nPress ENTER to continue")
 
-def list_tasks (task_list):
+def list_tasks ():
     clear()
-    print("=== Tasks List ===\n")
+    cursor.execute("SELECT * FROM tasks;")
+    task_list = cursor.fetchall()
 
-    if len(tasks) == 0:
-        print("There are no tasks")
-    else:
-        for task in task_list:
-            print(f"{task_list.index(task) + 1} - {task}")
-    
+    print(task_list)
 
 def add_task():
     clear()
     print("=== Add Task ===\n")
     task = input("Please write your task: ")
-    tasks.append(task)
+    task_priority = input("Please insert task priority: ")
+    task_completed = 0
 
-    with open(TASK_FILE, "w") as file:
-        json.dump(tasks, file)
+    cursor.execute("""
+    INSERT INTO tasks(task, priority, completed)
+    VALUES (?,?,?)
+    """, (task, task_priority, task_completed))
     
-    print(f"\n'{task}', added succefuly!")
+    print(f"\n'{task}', added succefuly with {task_priority} priority!")
 
 def delete_task():
     if len(tasks) == 0:
@@ -80,7 +87,7 @@ while True:
     choice = input("\nPlease choose an option: ")
 
     if choice == "1":
-        list_tasks(tasks)
+        list_tasks()
         pause()
 
     elif choice == "2":
@@ -94,3 +101,5 @@ while True:
     else:
         break
 
+connection.commit()
+connection.close()
