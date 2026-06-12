@@ -49,6 +49,13 @@ def delete_task(task_id):
     WHERE id = (?)
     """, (task_id,))
 
+def complete_task(task_id):
+    cursor.execute("""
+    UPDATE tasks
+    SET completed = 1
+    WHERE id = (?)
+""", (task_id))
+
 #menu 
 while True:
     
@@ -57,7 +64,8 @@ while True:
     print("=== Todo CLI ===\n")
     print("1 - List Tasks")
     print("2 - Add task")
-    print("3 - Delete task")
+    print("3 - Complete task")
+    print("4 - Delete task")
     print("0 - Save and Exit")
     choice = input("\nPlease choose an option: ")
 
@@ -69,7 +77,7 @@ while True:
         add_task()
         pause()
 
-    elif choice == "3":
+    elif choice == "4":
         list_tasks()
         selected_task = int(input("Please select a task to delete: "))
                 
