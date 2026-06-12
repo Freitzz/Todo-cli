@@ -16,6 +16,12 @@ CREATE TABLE IF NOT EXISTS tasks (
                )
 """)
 
+priority_map = {
+    1: "Low",
+    2: "Medium",
+    3: "High"
+}
+
 def clear():
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -28,7 +34,11 @@ def list_tasks ():
     task_list = cursor.fetchall()
 
     for task in task_list:
-        print(f"Id: {task[0]} - '{task[1]}' - {task[2]} priority.")
+        if task[3] == 0:
+            print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Not completed.")
+        elif task[3] == 1:
+            print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Completed.")
+
 
 def list_uncompleted_tasks():
     clear()
@@ -38,13 +48,26 @@ def list_uncompleted_tasks():
     task_list = cursor.fetchall()
 
     for task in task_list:
-        print(f"Id: {task[0]} - '{task[1]}' - {task[2]} priority.")
+        print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Not completed.")
 
 def add_task():
     clear()
     print("=== Add Task ===\n")
     task = input("Please write your task: ")
-    task_priority = input("Please insert task priority: ")
+    task_priority = 1
+    while True:
+        try:
+            task_priority = int(input("Please insert task priority:\n(1, 2 or 3)\n"))
+        except ValueError:
+            clear()
+            print("Please insert a valid integer!")
+        else:
+            if task_priority < 1 or task_priority > 3:
+                clear()
+                print("Please insert between 1, 2 or 3!")
+            else:
+                break
+
     task_completed = 0
 
     cursor.execute("""
@@ -52,7 +75,7 @@ def add_task():
     VALUES (?,?,?)
     """, (task, task_priority, task_completed))
     
-    print(f"\n'{task}', added succefuly with {task_priority} priority!")
+    print(f"\n'{task}', added succefuly with {priority_map[task_priority]} priority!")
 
 def delete_task(task_id):
     cursor.execute("""
