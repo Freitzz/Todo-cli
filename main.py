@@ -27,7 +27,18 @@ def list_tasks ():
     cursor.execute("SELECT * FROM tasks;")
     task_list = cursor.fetchall()
 
-    print(task_list)
+    for task in task_list:
+        print(f"Id: {task[0]} - '{task[1]}' - {task[2]} priority.")
+
+def list_uncompleted_tasks():
+    clear()
+    cursor.execute("""SELECT * FROM tasks
+                   WHERE completed = 0;                   
+                   """)
+    task_list = cursor.fetchall()
+
+    for task in task_list:
+        print(f"Id: {task[0]} - '{task[1]}' - {task[2]} priority.")
 
 def add_task():
     clear()
@@ -53,8 +64,8 @@ def complete_task(task_id):
     cursor.execute("""
     UPDATE tasks
     SET completed = 1
-    WHERE id = (?)
-""", (task_id))
+    WHERE id = (?);
+    """, (task_id,))
 
 #menu 
 while True:
@@ -69,14 +80,24 @@ while True:
     print("0 - Save and Exit")
     choice = input("\nPlease choose an option: ")
 
+    #list all tasks
     if choice == "1":
         list_tasks()
         pause()
 
+    #Add task
     elif choice == "2":
         add_task()
         pause()
 
+    #complete task
+    elif choice == "3":
+        list_uncompleted_tasks()
+        selected_task = int(input("Please select a task to complete: "))
+        complete_task(selected_task)
+        pause()
+
+    #delete task
     elif choice == "4":
         list_tasks()
         selected_task = int(input("Please select a task to delete: "))
@@ -85,6 +106,7 @@ while True:
         print("Task delete successfully")
         pause()
     
+    #exit
     elif choice == "0":
         connection.commit()
         connection.close()
