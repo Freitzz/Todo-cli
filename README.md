@@ -1,7 +1,7 @@
 # Todo CLI
 
 A simple command-line application for a todo list.\
-This is my first time using git and my first steps lerning to code.
+This is my first time using git and my first steps learning to code.
 
 ## Features
 
@@ -9,11 +9,11 @@ This is my first time using git and my first steps lerning to code.
 - Add tasks
 - Remove tasks
 - Mark task as completed
-- Save to Data Base
+- Save to database
 
 ## Technologies
 
 - Python
 - Git
 - GitHub
-- SQL
+- SQLite

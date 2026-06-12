@@ -31,12 +31,15 @@ def pause():
 def list_tasks ():
     cursor.execute("SELECT * FROM tasks;")
     task_list = cursor.fetchall()
-
-    for task in task_list:
-        if task[3] == 0:
-            print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Not completed.")
-        elif task[3] == 1:
-            print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Completed.")
+    
+    if task_list == []:
+        print("There are no tasks.")
+    else:
+        for task in task_list:
+            if task[3] == 0:
+                print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Not completed.")
+            elif task[3] == 1:
+                print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Completed.")
 
 
 def list_uncompleted_tasks():
@@ -45,8 +48,11 @@ def list_uncompleted_tasks():
                    """)
     task_list = cursor.fetchall()
 
-    for task in task_list:
-        print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Not completed.")
+    if task_list == []:
+        print("There are no uncomplete tasks.")
+    else:
+        for task in task_list:
+            print(f"Id: {task[0]} - '{task[1]}' - {priority_map[task[2]]} priority - Not completed.")
 
 def add_task():
     clear()
@@ -94,7 +100,7 @@ def task_exists(task_id):
                     SELECT * FROM tasks
                     WHERE id = (?);
                     """, (task_id,))
-    task = cursor.fetchall()               
+    task = cursor.fetchone()               
     if task == []:
         return False
     else:
@@ -140,12 +146,11 @@ while True:
                     break
 
                 elif task_exists(selected_task):
-                    delete_task(selected_task)
+                    complete_task(selected_task)
                     print("\nTask marked as completed successfully")
                     break                  
                 else:
                     print("\nPlease insert a valid id!")
-        complete_task(selected_task)
         pause()
 
     #delete task
