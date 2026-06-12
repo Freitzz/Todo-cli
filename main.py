@@ -29,7 +29,6 @@ def pause():
     input("\nPress ENTER to continue")
 
 def list_tasks ():
-    clear()
     cursor.execute("SELECT * FROM tasks;")
     task_list = cursor.fetchall()
 
@@ -41,7 +40,6 @@ def list_tasks ():
 
 
 def list_uncompleted_tasks():
-    clear()
     cursor.execute("""SELECT * FROM tasks
                    WHERE completed = 0;                   
                    """)
@@ -83,6 +81,7 @@ def delete_task(task_id):
     WHERE id = (?)
     """, (task_id,))
 
+#returns true of false
 def complete_task(task_id):
     cursor.execute("""
     UPDATE tasks
@@ -90,13 +89,24 @@ def complete_task(task_id):
     WHERE id = (?);
     """, (task_id,))
 
+def task_exists(task_id):
+    cursor.execute("""
+                    SELECT * FROM tasks
+                    WHERE id = (?);
+                    """, (task_id,))
+    task = cursor.fetchall()               
+    if task == []:
+        return False
+    else:
+        return True
+
 #menu 
 while True:
     
     clear()
     print("==== This is a test branch ====\n")
     print("=== Todo CLI ===\n")
-    print("1 - List Tasks")
+    print("1 - List all tasks")
     print("2 - Add task")
     print("3 - Complete task")
     print("4 - Delete task")
@@ -105,6 +115,8 @@ while True:
 
     #list all tasks
     if choice == "1":
+        clear()
+        print("=== Tasks list ===\n")
         list_tasks()
         pause()
 
@@ -115,18 +127,48 @@ while True:
 
     #complete task
     elif choice == "3":
+        clear()
+        print("=== Complete task ===\n")
         list_uncompleted_tasks()
-        selected_task = int(input("Please select a task to complete: "))
+        while True:
+            try:
+                selected_task = int(input("\nPlease select a task id to mark as completed (Enter 0 to exit.): "))
+            except ValueError:
+                print("\nPlese insert a valid id! - intyeger")
+            else:
+                if selected_task == 0:
+                    break
+
+                elif task_exists(selected_task):
+                    delete_task(selected_task)
+                    print("\nTask marked as completed successfully")
+                    break                  
+                else:
+                    print("\nPlease insert a valid id!")
         complete_task(selected_task)
         pause()
 
     #delete task
     elif choice == "4":
+        clear()
+        print("=== Delete task ===\n")
         list_tasks()
-        selected_task = int(input("Please select a task to delete: "))
-                
-        delete_task(selected_task)
-        print("Task delete successfully")
+        
+        while True:
+            try:
+                selected_task = int(input("\nPlease select a task id to delete (Enter 0 to exit): "))
+            except ValueError:
+                print("\nPlese insert a valid id!")
+            else:
+                if selected_task == 0:
+                    break
+
+                elif task_exists(selected_task):
+                    delete_task(selected_task)
+                    print("\nTask delete successfully")
+                    break                  
+                else:
+                    print("\nPlease insert a valid id!")                
         pause()
     
     #exit
